@@ -15,6 +15,7 @@ import { ApiDocs } from "./components/ApiDocs";
 import { AuthModal } from "./components/AuthModal";
 import { AccidentPromptModal } from "./components/AccidentPromptModal";
 import { NearbyAlertBanner } from "./components/NearbyAlertBanner";
+import { GammaStudio } from "./components/GammaStudio";
 import { api } from "./services/api";
 import { accidentDetection } from "./services/accidentDetectionService";
 import { User, Incident, NearbyIncident, AlertSettings } from "./types";
@@ -22,7 +23,7 @@ import { I18nProvider, useTranslation } from "./i18n";
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState<
-    "emergency" | "live" | "corridor" | "history" | "contacts" | "api" | "settings"
+    "emergency" | "live" | "corridor" | "gamma" | "history" | "contacts" | "api" | "settings"
   >("emergency");
   const [user, setUser] = useState<User | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -161,6 +162,7 @@ function AppContent() {
             onIncidentSaved={handleIncidentSaved}
             onNavigateToLive={() => setActiveTab("live")}
             onNavigateToCorridor={() => setActiveTab("corridor")}
+            onNavigateToGamma={() => setActiveTab("gamma")}
             onSimulateAccidentImpact={handleSimulateImpact}
           />
         )}
@@ -178,6 +180,14 @@ function AppContent() {
             user={user}
             onOpenAuth={() => setAuthModalOpen(true)}
             onNavigateToIncident={(_id) => setActiveTab("live")}
+          />
+        )}
+
+        {activeTab === "gamma" && (
+          <GammaStudio
+            user={user}
+            onOpenAuth={() => setAuthModalOpen(true)}
+            onNavigateToEmergency={() => setActiveTab("emergency")}
           />
         )}
 

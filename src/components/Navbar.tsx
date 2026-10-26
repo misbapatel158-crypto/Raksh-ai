@@ -12,6 +12,7 @@ import {
   Settings as SettingsIcon,
   Radio,
   Route,
+  Sparkles,
 } from "lucide-react";
 import { User } from "../types";
 import { useTranslation } from "../i18n";
@@ -19,8 +20,8 @@ import { LanguageSelector } from "./LanguageSelector";
 
 interface NavbarProps {
   user: User | null;
-  activeTab: "emergency" | "live" | "corridor" | "history" | "contacts" | "api" | "settings";
-  setActiveTab: (tab: "emergency" | "live" | "corridor" | "history" | "contacts" | "api" | "settings") => void;
+  activeTab: "emergency" | "live" | "corridor" | "gamma" | "history" | "contacts" | "api" | "settings";
+  setActiveTab: (tab: "emergency" | "live" | "corridor" | "gamma" | "history" | "contacts" | "api" | "settings") => void;
   onOpenAuth: () => void;
   onLogout: () => void;
   backendHealthy: boolean | null;
@@ -137,6 +138,20 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Route className="w-3.5 h-3.5 text-red-500" />
             <span className="hidden md:inline">{t("nav.corridor", "🚨 Live Tracking")}</span>
             <span className="md:hidden">Tracking</span>
+          </button>
+
+          <button
+            id="nav-tab-gamma"
+            onClick={() => setActiveTab("gamma")}
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+              activeTab === "gamma"
+                ? "bg-indigo-600 text-white shadow-sm ring-1 ring-indigo-500"
+                : "text-indigo-700 hover:text-indigo-900 hover:bg-indigo-50"
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-indigo-400 animate-pulse" />
+            <span className="hidden md:inline">Gamma Studio</span>
+            <span className="md:hidden">Gamma</span>
           </button>
 
           <button

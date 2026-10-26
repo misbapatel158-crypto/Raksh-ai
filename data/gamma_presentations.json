@@ -1,0 +1,114 @@
+[
+  {
+    "id": "gamma-1792999445648-e4462522",
+    "userId": null,
+    "topic": "Accident Prevention and Highway Safety",
+    "description": "Practical guidelines on defensive driving, blind spots, and helmet compliance for highway motorists.",
+    "slideCount": 8,
+    "language": "en",
+    "style": "modern",
+    "mode": "manual_prompt",
+    "gammaUrl": null,
+    "prompt": "Create an authoritative, highly engaging 8-card modern presentation about:\nTitle: \"Accident Prevention and Highway Safety\"\nTarget Language: English\nTone & Style: modern, informative, authoritative public safety guidance\nContext & Description: Practical guidelines on defensive driving, blind spots, and helmet compliance for highway motorists.\n\n=== PRESENTATION STRUCTURE & CARD OUTLINE ===\nCard 1: Accident Prevention and Highway Safety\n• Subtitle: Practical guidelines on defensive driving, blind spots, and helmet compliance for highway motorists.\n• Presented by: RakshAI Public Safety Initiative\n• Language: EN | Format: MODERN Presentation Deck\n• Focus: Actionable preparedness, rapid decision making, and life preservation\n[Design & Imagery]: Visual Style: Crisp infographic illustration showing a bold modern cover title card with high-contrast emergency lighting, clean icons, and authoritative safety typography.\n[Key Takeaway]: Key Takeaway: Rapid emergency readiness saves lives. Every second counts.\n\nCard 2: Introduction & Urgent Importance\n• Context: Practical guidelines on defensive driving, blind spots, and helmet compliance for highway motorists.\n• Every year, thousands of critical delays occur due to hesitation and lack of verified contact info.\n• The 'Golden Hour' principle: Prompt intervention in the first 60 minutes cuts mortality rates by over 50%.\n• Immediate bystander safety: Ensuring the scene is secure before initiating help.\n[Design & Imagery]: Visual Style: Crisp infographic illustration showing a split diagram depicting the timeline of emergency triage and the golden-hour survival rate graph.\n[Key Takeaway]: Key Takeaway: Early situational recognition prevents compound disasters.\n\nCard 3: Key Principles & Safety Framework\n• 1. Assess the scene: Identify active fire, electrical leakage, traffic, or toxic smoke.\n• 2. Alert authorities immediately via 112 (Universal Emergency) before attempting solo rescues.\n• 3. Direct crowd control: Assign specific individuals to clear pathways and guide incoming ambulances.\n• 4. Preserve vitals: Keep the patient warm, airway clear, and avoid moving suspect spinal injuries.\n[Design & Imagery]: Visual Style: Crisp infographic illustration showing four sequential safety checkpoint icons with high-visibility hazard badges.\n[Key Takeaway]: Key Takeaway: Safety first: never become a second casualty during rescue.\n\nCard 4: Step-by-Step Emergency Action Plan\n• Phase 1: Dial 112 / 108 / 101 with exact GPS coordinates and landmark references.\n• Phase 2: Communicate caller name, patient count, conscious status, and visible hazards clearly.\n• Phase 3: Deploy available first-aid (direct pressure for bleeding, recovery position for unconscious breathing).\n• Phase 4: Station a volunteer at the main road junction to guide response vehicles.\n[Design & Imagery]: Visual Style: Crisp infographic illustration showing a clean modern flowchart illustrating 4 phases of emergency execution.\n[Key Takeaway]: Key Takeaway: Clear, calm communication is the primary bridge to rapid hospital dispatch.\n\nCard 5: Technology & Community Coordination\n• RakshAI Automated Assistance: Instant nearest hospital & fire station geofencing.\n• Smart Corridors: Traffic signal coordination for emergency vehicles to bypass bottlenecks.\n• Live GPS Share: Seamlessly sending one-tap maps location to family and responders.\n• Offline Directory Backup: Accessing vital phone numbers even when cellular data is severed.\n[Design & Imagery]: Visual Style: Crisp infographic illustration showing a mobile interface graphic showing smart ambulance telemetry and digital SOS routing.\n[Key Takeaway]: Key Takeaway: Technology augments community response when integrated seamlessly.\n\nCard 6: Critical Pitfalls & What to Avoid\n• DO NOT crowd the casualty or restrict fresh airflow.\n• DO NOT give liquids or water to an unconscious or heavily bleeding person (aspiration risk).\n• DO NOT move an accident victim with suspected cervical/spinal injury unless immediate fire/explosion danger exists.\n• DO NOT delay dialing 112 to take photos or record videos for social media.\n[Design & Imagery]: Visual Style: Crisp infographic illustration showing red warning icons with concise 'Do Not' annotations for emergency errors.\n[Key Takeaway]: Key Takeaway: Preventing common bystander mistakes is as vital as active aid.\n\nCard 7: Readiness Checklist & Emergency Kit\n• Keep a 72-hour family emergency kit (water, non-perishables, flashlight, whistle, first-aid).\n• Store emergency numbers in phone ICE (In Case of Emergency) contacts.\n• Conduct regular household and office fire drills and identify 2 evacuation routes.\n• Have basic bleeding control kits (sterile gauze, elastic bandages, tourniquet) in every vehicle.\n[Design & Imagery]: Visual Style: Crisp infographic illustration showing an exploded view of an emergency trauma kit with labeled medical tools.\n[Key Takeaway]: Key Takeaway: Preparedness in calm times guarantees swift action during crises.\n\nCard 8: Summary & Life-Saving Contacts\n• Universal Emergency Helpline: Dial 112 (24/7 National Emergency)\n• Ambulance Services: 108 (Trauma/Emergency) | 102 (Free Transport)\n• Fire & Rescue: 101 | Police Control: 100\n• Empower your community with RakshAI: Stay alert, stay prepared, save lives.\n[Design & Imagery]: Visual Style: Crisp infographic illustration showing a bold emergency card featuring prominent national helpline badges and RakshAI branding.\n[Key Takeaway]: Key Takeaway: Save these numbers in your phone now. Preparedness starts today.\n\n=== INSTRUCTIONS FOR GAMMA AI ===\n- Output language: Write card titles and body text in clear, professional English.\n- Visual theme: Apply a clean, modern modern aesthetic with emergency red and amber accents.\n- Structure: Keep bullet points punchy and easy to scan from a distance.\n- End the deck with universal emergency phone numbers (112, 108, 101, 100).",
+    "slides": [
+      {
+        "slideNumber": 1,
+        "title": "Accident Prevention and Highway Safety",
+        "keyPoints": [
+          "Subtitle: Practical guidelines on defensive driving, blind spots, and helmet compliance for highway motorists.",
+          "Presented by: RakshAI Public Safety Initiative",
+          "Language: EN | Format: MODERN Presentation Deck",
+          "Focus: Actionable preparedness, rapid decision making, and life preservation"
+        ],
+        "visualDirection": "Visual Style: Crisp infographic illustration showing a bold modern cover title card with high-contrast emergency lighting, clean icons, and authoritative safety typography.",
+        "takeaway": "Key Takeaway: Rapid emergency readiness saves lives. Every second counts."
+      },
+      {
+        "slideNumber": 2,
+        "title": "Introduction & Urgent Importance",
+        "keyPoints": [
+          "Context: Practical guidelines on defensive driving, blind spots, and helmet compliance for highway motorists.",
+          "Every year, thousands of critical delays occur due to hesitation and lack of verified contact info.",
+          "The 'Golden Hour' principle: Prompt intervention in the first 60 minutes cuts mortality rates by over 50%.",
+          "Immediate bystander safety: Ensuring the scene is secure before initiating help."
+        ],
+        "visualDirection": "Visual Style: Crisp infographic illustration showing a split diagram depicting the timeline of emergency triage and the golden-hour survival rate graph.",
+        "takeaway": "Key Takeaway: Early situational recognition prevents compound disasters."
+      },
+      {
+        "slideNumber": 3,
+        "title": "Key Principles & Safety Framework",
+        "keyPoints": [
+          "1. Assess the scene: Identify active fire, electrical leakage, traffic, or toxic smoke.",
+          "2. Alert authorities immediately via 112 (Universal Emergency) before attempting solo rescues.",
+          "3. Direct crowd control: Assign specific individuals to clear pathways and guide incoming ambulances.",
+          "4. Preserve vitals: Keep the patient warm, airway clear, and avoid moving suspect spinal injuries."
+        ],
+        "visualDirection": "Visual Style: Crisp infographic illustration showing four sequential safety checkpoint icons with high-visibility hazard badges.",
+        "takeaway": "Key Takeaway: Safety first: never become a second casualty during rescue."
+      },
+      {
+        "slideNumber": 4,
+        "title": "Step-by-Step Emergency Action Plan",
+        "keyPoints": [
+          "Phase 1: Dial 112 / 108 / 101 with exact GPS coordinates and landmark references.",
+          "Phase 2: Communicate caller name, patient count, conscious status, and visible hazards clearly.",
+          "Phase 3: Deploy available first-aid (direct pressure for bleeding, recovery position for unconscious breathing).",
+          "Phase 4: Station a volunteer at the main road junction to guide response vehicles."
+        ],
+        "visualDirection": "Visual Style: Crisp infographic illustration showing a clean modern flowchart illustrating 4 phases of emergency execution.",
+        "takeaway": "Key Takeaway: Clear, calm communication is the primary bridge to rapid hospital dispatch."
+      },
+      {
+        "slideNumber": 5,
+        "title": "Technology & Community Coordination",
+        "keyPoints": [
+          "RakshAI Automated Assistance: Instant nearest hospital & fire station geofencing.",
+          "Smart Corridors: Traffic signal coordination for emergency vehicles to bypass bottlenecks.",
+          "Live GPS Share: Seamlessly sending one-tap maps location to family and responders.",
+          "Offline Directory Backup: Accessing vital phone numbers even when cellular data is severed."
+        ],
+        "visualDirection": "Visual Style: Crisp infographic illustration showing a mobile interface graphic showing smart ambulance telemetry and digital SOS routing.",
+        "takeaway": "Key Takeaway: Technology augments community response when integrated seamlessly."
+      },
+      {
+        "slideNumber": 6,
+        "title": "Critical Pitfalls & What to Avoid",
+        "keyPoints": [
+          "DO NOT crowd the casualty or restrict fresh airflow.",
+          "DO NOT give liquids or water to an unconscious or heavily bleeding person (aspiration risk).",
+          "DO NOT move an accident victim with suspected cervical/spinal injury unless immediate fire/explosion danger exists.",
+          "DO NOT delay dialing 112 to take photos or record videos for social media."
+        ],
+        "visualDirection": "Visual Style: Crisp infographic illustration showing red warning icons with concise 'Do Not' annotations for emergency errors.",
+        "takeaway": "Key Takeaway: Preventing common bystander mistakes is as vital as active aid."
+      },
+      {
+        "slideNumber": 7,
+        "title": "Readiness Checklist & Emergency Kit",
+        "keyPoints": [
+          "Keep a 72-hour family emergency kit (water, non-perishables, flashlight, whistle, first-aid).",
+          "Store emergency numbers in phone ICE (In Case of Emergency) contacts.",
+          "Conduct regular household and office fire drills and identify 2 evacuation routes.",
+          "Have basic bleeding control kits (sterile gauze, elastic bandages, tourniquet) in every vehicle."
+        ],
+        "visualDirection": "Visual Style: Crisp infographic illustration showing an exploded view of an emergency trauma kit with labeled medical tools.",
+        "takeaway": "Key Takeaway: Preparedness in calm times guarantees swift action during crises."
+      },
+      {
+        "slideNumber": 8,
+        "title": "Summary & Life-Saving Contacts",
+        "keyPoints": [
+          "Universal Emergency Helpline: Dial 112 (24/7 National Emergency)",
+          "Ambulance Services: 108 (Trauma/Emergency) | 102 (Free Transport)",
+          "Fire & Rescue: 101 | Police Control: 100",
+          "Empower your community with RakshAI: Stay alert, stay prepared, save lives."
+        ],
+        "visualDirection": "Visual Style: Crisp infographic illustration showing a bold emergency card featuring prominent national helpline badges and RakshAI branding.",
+        "takeaway": "Key Takeaway: Save these numbers in your phone now. Preparedness starts today."
+      }
+    ],
+    "status": "manual_ready",
+    "createdAt": "2026-10-26T07:24:05.648Z"
+  }
+]

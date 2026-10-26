@@ -4,6 +4,8 @@ import path from 'path';
 import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
+  const isHmrDisabled = process.env.DISABLE_HMR === 'true';
+
   return {
     plugins: [react(), tailwindcss()],
     resolve: {
@@ -16,11 +18,10 @@ export default defineConfig(() => {
       include: ['react', 'react-dom', 'react-dom/client', 'lucide-react'],
     },
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
-      hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
-      watch: process.env.DISABLE_HMR === 'true' ? null : {},
+      allowedHosts: true as const,
+      cors: true,
+      hmr: isHmrDisabled ? false : true,
+      watch: isHmrDisabled ? null : {},
     },
   };
 });

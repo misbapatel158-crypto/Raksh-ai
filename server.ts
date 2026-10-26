@@ -1,4 +1,5 @@
 import express from "express";
+import http from "http";
 import path from "path";
 import fs from "fs";
 import dotenv from "dotenv";
@@ -39,12 +40,23 @@ async function ensureDatabaseSeeded() {
 
 async function startServer() {
   const app = createApp();
+  const httpServer = http.createServer(app);
 
   // Vite middleware for development vs static serve for production
   if (process.env.NODE_ENV !== "production") {
     const { createServer: createViteServer } = await import("vite");
+    const isHmrDisabled = process.env.DISABLE_HMR === "true";
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        allowedHosts: true,
+        cors: true,
+        hmr: isHmrDisabled
+          ? false
+          : {
+              server: httpServer,
+            },
+      },
       appType: "spa",
     });
     app.use(vite.middlewares);
@@ -57,7 +69,7 @@ async function startServer() {
   }
 
   // Start listening on port 3000 for Cloud Run ingress
-  app.listen(PORT, "0.0.0.0", () => {
+  httpServer.listen(PORT, "0.0.0.0", () => {
     console.log(`ResQAI Full-Stack Server active on http://0.0.0.0:${PORT}`);
     // Run database seed check asynchronously after server is listening
     ensureDatabaseSeeded().catch((err) => {

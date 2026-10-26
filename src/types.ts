@@ -461,4 +461,86 @@ export interface SimulationStepResponse {
   isCompleted: boolean;
 }
 
+// ============================================================================
+// GAMMA AI PRESENTATION STUDIO TYPES
+// ============================================================================
+
+export type PresentationStyle = "professional" | "modern" | "minimal" | "cinematic";
+export type PresentationLanguage = "en" | "hi" | "mr";
+
+export interface PresentationTemplate {
+  id: string;
+  title: string;
+  topic: string;
+  description: string;
+  slideCount: number;
+  recommendedStyle: PresentationStyle;
+  language: PresentationLanguage;
+  category: string;
+  outlineHighlights: string[];
+}
+
+export interface GeneratedSlide {
+  slideNumber: number;
+  title: string;
+  keyPoints: string[];
+  visualDirection: string;
+  takeaway: string;
+}
+
+export interface GammaGenerateRequest {
+  topic: string;
+  description: string;
+  slideCount: number;
+  language: PresentationLanguage;
+  style: PresentationStyle;
+}
+
+export interface GammaGenerateResponse {
+  id: string;
+  status: "completed" | "pending" | "manual_ready" | "failed";
+  mode: "api" | "manual_prompt";
+  gammaUrl?: string | null;
+  exportUrl?: string | null;
+  gammaWebUrl?: string;
+  generationId?: string | null;
+  prompt: string;
+  slides: GeneratedSlide[];
+  topic: string;
+  description?: string;
+  slideCount: number;
+  language: PresentationLanguage;
+  style: PresentationStyle;
+  instructions?: string[];
+  apiNotice?: string;
+}
+
+export interface GammaStatusResponse {
+  isApiConfigured: boolean;
+  serviceName: string;
+  supportedLanguages: Array<{ code: PresentationLanguage; name: string; label: string }>;
+  supportedStyles: Array<{ id: PresentationStyle; label: string; description: string }>;
+  templates: PresentationTemplate[];
+  manualFallbackUrl: string;
+}
+
+export interface PresentationRecord {
+  id: string;
+  userId?: string | null;
+  topic: string;
+  description: string;
+  slideCount: number;
+  language: PresentationLanguage;
+  style: PresentationStyle;
+  mode: "api" | "manual_prompt";
+  gammaUrl?: string | null;
+  exportUrl?: string | null;
+  generationId?: string | null;
+  prompt: string;
+  slides: GeneratedSlide[];
+  status: "completed" | "pending" | "manual_ready" | "failed";
+  createdAt: string;
+}
+
+
 

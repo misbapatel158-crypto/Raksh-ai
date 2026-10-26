@@ -30,6 +30,9 @@ import {
   Radio,
   Zap,
   Route,
+  Sparkles,
+  Presentation,
+  Copy,
 } from "lucide-react";
 
 import { api } from "../services/api";
@@ -46,6 +49,9 @@ import {
   FireService,
   EmergencyContact,
   SavedEmergencyIncident,
+  PresentationStyle,
+  PresentationLanguage,
+  GammaGenerateResponse,
 } from "../types";
 import { useTranslation } from "../i18n";
 
@@ -55,6 +61,7 @@ interface EmergencyWizardProps {
   onIncidentSaved: (incident: Incident) => void;
   onNavigateToLive?: () => void;
   onNavigateToCorridor?: () => void;
+  onNavigateToGamma?: () => void;
   onSimulateAccidentImpact?: () => void;
 }
 
@@ -124,10 +131,21 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
   onIncidentSaved,
   onNavigateToLive,
   onNavigateToCorridor,
+  onNavigateToGamma,
   onSimulateAccidentImpact,
 }) => {
-
   const { t } = useTranslation();
+
+  // Gamma AI Studio Dashboard Card State
+  const [gammaCardTopic, setGammaCardTopic] = useState("Emergency Response Awareness: The Golden Hour & Rapid Multi-Agency Dispatch");
+  const [gammaCardDesc, setGammaCardDesc] = useState("A comprehensive guide on rapid emergency response, understanding the Golden Hour in trauma care, calling 112/108/101, and how community bystanders can safely coordinate emergency responders.");
+  const [gammaCardSlides, setGammaCardSlides] = useState<number>(8);
+  const [gammaCardLang, setGammaCardLang] = useState<PresentationLanguage>("en");
+  const [gammaCardStyle, setGammaCardStyle] = useState<PresentationStyle>("professional");
+  const [gammaCardGenerating, setGammaCardGenerating] = useState(false);
+  const [gammaCardResult, setGammaCardResult] = useState<GammaGenerateResponse | null>(null);
+  const [gammaCardCopied, setGammaCardCopied] = useState(false);
+  const [gammaCardSelectedTemplate, setGammaCardSelectedTemplate] = useState("Emergency Response Awareness");
   // Network connectivity status
   const [isOnline, setIsOnline] = useState<boolean>(typeof navigator !== "undefined" ? navigator.onLine : true);
 
@@ -591,6 +609,112 @@ Mode: ${isOnline ? "Online" : "Offline Storage"}`;
     setNewContactPhone("");
     setShowAddContact(false);
     showToast("✓ Emergency contact saved.");
+  };
+
+  const DASHBOARD_GAMMA_TEMPLATES = [
+    {
+      title: "Emergency Response Awareness",
+      topic: "Emergency Response Awareness: The Golden Hour & Rapid Multi-Agency Dispatch",
+      desc: "A comprehensive guide on rapid emergency response, understanding the Golden Hour in trauma care, calling 112/108/101, and how community bystanders can safely coordinate emergency responders.",
+      slides: 8,
+      style: "professional" as PresentationStyle,
+      lang: "en" as PresentationLanguage,
+    },
+    {
+      title: "Accident Prevention",
+      topic: "Road Safety & Accident Prevention: Hazard Reduction and Defensive Driving",
+      desc: "Educational presentation on defensive driving techniques, high-speed collision risks, helmet and seatbelt efficacy, pedestrian safety, and smart accident prevention protocols.",
+      slides: 8,
+      style: "modern" as PresentationStyle,
+      lang: "en" as PresentationLanguage,
+    },
+    {
+      title: "Fire Safety Awareness",
+      topic: "Fire Safety Awareness: Prevention, Fire Classes, and Rapid Evacuation Drill",
+      desc: "Crucial safety presentation covering fire classification (Class A-F), PASS fire extinguisher technique, electrical hazards, smoke inhalation protection, and building evacuation plans.",
+      slides: 8,
+      style: "cinematic" as PresentationStyle,
+      lang: "en" as PresentationLanguage,
+    },
+    {
+      title: "First Aid Awareness",
+      topic: "First Aid Awareness: Basic Life Support (BLS), CPR, and Trauma First-Response",
+      desc: "Step-by-step life-saving first-aid practices including Hands-Only CPR, choking recovery, severe hemorrhage pressure control, burn treatment, and fracture stabilization before ambulance arrival.",
+      slides: 10,
+      style: "professional" as PresentationStyle,
+      lang: "en" as PresentationLanguage,
+    },
+    {
+      title: "Emergency Preparedness",
+      topic: "Community Emergency Preparedness & Family Resilience Blueprint",
+      desc: "Blueprint for disaster resilience, assembling 72-hour emergency go-bags, flood/earthquake readiness, backup power and communication channels, and community mutual-aid networks.",
+      slides: 10,
+      style: "minimal" as PresentationStyle,
+      lang: "en" as PresentationLanguage,
+    },
+    {
+      title: "AI in Emergency Management",
+      topic: "AI in Emergency Management: Smart Corridors, Instant Triage, and Predictive Rescue",
+      desc: "Exploration of modern artificial intelligence in disaster management: sensor-driven crash detection, dynamic traffic light green corridors for ambulances, automated triage, and GIS spatial coordination.",
+      slides: 8,
+      style: "modern" as PresentationStyle,
+      lang: "en" as PresentationLanguage,
+    },
+  ];
+
+  const handleDashboardTemplateSelect = (tpl: typeof DASHBOARD_GAMMA_TEMPLATES[0]) => {
+    setGammaCardSelectedTemplate(tpl.title);
+    setGammaCardTopic(tpl.topic);
+    setGammaCardDesc(tpl.desc);
+    setGammaCardSlides(tpl.slides);
+    setGammaCardStyle(tpl.style);
+    setGammaCardLang(tpl.lang);
+    setGammaCardResult(null);
+    showToast(`✓ Template "${tpl.title}" selected.`);
+  };
+
+  const handleDashboardGenerate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!gammaCardTopic.trim() || !gammaCardDesc.trim()) {
+      showToast("⚠️ Topic and description are required.");
+      return;
+    }
+    setGammaCardGenerating(true);
+    setGammaCardResult(null);
+    try {
+      const res = await api.generateGammaPresentation({
+        topic: gammaCardTopic.trim(),
+        description: gammaCardDesc.trim(),
+        slideCount: gammaCardSlides,
+        language: gammaCardLang,
+        style: gammaCardStyle,
+      });
+      if (res.success && res.data) {
+        setGammaCardResult(res.data);
+        showToast(
+          res.data.mode === "api"
+            ? "✓ Presentation generated via Gamma API!"
+            : "✓ Presentation prompt ready for Gamma!"
+        );
+      } else {
+        showToast(`⚠️ ${res.message || "Could not generate presentation."}`);
+      }
+    } catch {
+      showToast("⚠️ Network error while generating presentation.");
+    } finally {
+      setGammaCardGenerating(false);
+    }
+  };
+
+  const handleDashboardCopy = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setGammaCardCopied(true);
+      showToast("✓ Presentation prompt copied to clipboard!");
+      setTimeout(() => setGammaCardCopied(false), 3000);
+    } catch {
+      showToast("⚠️ Please copy prompt manually.");
+    }
   };
 
   const nearestHospital = hospitals[0] || null;
@@ -1119,6 +1243,263 @@ Mode: ${isOnline ? "Online" : "Offline Storage"}`;
                 </div>
               ))}
             </div>
+          </div>
+        )}
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 3.5. GAMMA AI STUDIO DASHBOARD CARD                                      */}
+      {/* ========================================================================= */}
+      <div
+        id="gamma-ai-studio-dashboard-card"
+        className="bg-white border-2 border-indigo-500/30 hover:border-indigo-500/60 transition-all rounded-2xl p-5 sm:p-6 shadow-sm space-y-5"
+      >
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#F4F4F5] pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white flex items-center justify-center font-bold text-lg shadow-sm shrink-0">
+              <Sparkles className="w-5 h-5 animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-base sm:text-lg font-black text-[#18181B] tracking-tight">
+                  Gamma AI Studio
+                </h2>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase tracking-wider">
+                  Emergency Deck Builder
+                </span>
+              </div>
+              <p className="text-xs text-[#71717A] mt-0.5">
+                Generate tailored emergency slides for first-responder briefings, community workshops, and road safety drills.
+              </p>
+            </div>
+          </div>
+
+          {onNavigateToGamma && (
+            <button
+              id="btn-open-full-gamma-studio"
+              onClick={onNavigateToGamma}
+              className="px-3.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-xs font-bold border border-indigo-200 flex items-center gap-1.5 transition-colors self-start sm:self-auto shrink-0"
+            >
+              <Presentation className="w-3.5 h-3.5" />
+              <span>Full Studio View →</span>
+            </button>
+          )}
+        </div>
+
+        {/* 6 Ready-made Emergency Templates */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] uppercase font-bold text-[#71717A] tracking-wider">
+              Quick Emergency Templates
+            </span>
+            <span className="text-[11px] text-[#A1A1AA]">Click to auto-populate</span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+            {DASHBOARD_GAMMA_TEMPLATES.map((tpl) => {
+              const isSelected = gammaCardSelectedTemplate === tpl.title;
+              return (
+                <button
+                  type="button"
+                  key={tpl.title}
+                  onClick={() => handleDashboardTemplateSelect(tpl)}
+                  className={`p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between gap-1 text-xs ${
+                    isSelected
+                      ? "bg-indigo-50 border-indigo-500 font-bold text-indigo-900 shadow-2xs"
+                      : "bg-[#FAFAFA] border-[#E4E4E7] text-[#52525B] hover:border-zinc-300 hover:bg-white"
+                  }`}
+                >
+                  <span className="truncate leading-tight font-semibold block">{tpl.title}</span>
+                  <span className="text-[10px] text-[#A1A1AA] font-mono">{tpl.slides} slides</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Presentation Input Controls */}
+        <form onSubmit={handleDashboardGenerate} className="space-y-4 pt-1">
+          {/* Topic Field */}
+          <div className="space-y-1">
+            <label className="block text-xs font-bold text-[#18181B] uppercase tracking-wider">
+              Topic
+            </label>
+            <input
+              type="text"
+              required
+              value={gammaCardTopic}
+              onChange={(e) => setGammaCardTopic(e.target.value)}
+              placeholder="e.g. Emergency Response Awareness & Rapid Triage"
+              className="w-full bg-[#FAFAFA] border border-[#E4E4E7] focus:border-indigo-500 focus:bg-white rounded-xl px-3 py-2 text-xs font-medium text-[#18181B] outline-hidden shadow-2xs"
+            />
+          </div>
+
+          {/* Description Field */}
+          <div className="space-y-1">
+            <label className="block text-xs font-bold text-[#18181B] uppercase tracking-wider">
+              Description
+            </label>
+            <textarea
+              rows={2}
+              required
+              value={gammaCardDesc}
+              onChange={(e) => setGammaCardDesc(e.target.value)}
+              placeholder="Outline target audience, specific procedures, and core safety takeaways..."
+              className="w-full bg-[#FAFAFA] border border-[#E4E4E7] focus:border-indigo-500 focus:bg-white rounded-xl p-2.5 text-xs font-medium text-[#18181B] outline-hidden shadow-2xs"
+            />
+          </div>
+
+          {/* Configuration Grid: Slides, Language, Style */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {/* Slide Count */}
+            <div className="space-y-1">
+              <label className="block text-[11px] font-bold text-[#71717A] uppercase">
+                Slide Count
+              </label>
+              <select
+                value={gammaCardSlides}
+                onChange={(e) => setGammaCardSlides(Number(e.target.value))}
+                className="w-full bg-[#FAFAFA] border border-[#E4E4E7] rounded-xl px-2.5 py-1.5 text-xs font-bold text-[#18181B] outline-hidden"
+              >
+                <option value={5}>5 Slides (Quick Brief)</option>
+                <option value={8}>8 Slides (Standard Deck)</option>
+                <option value={10}>10 Slides (Comprehensive)</option>
+                <option value={12}>12 Slides (Deep Training)</option>
+                <option value={15}>15 Slides (Masterclass)</option>
+              </select>
+            </div>
+
+            {/* Language */}
+            <div className="space-y-1">
+              <label className="block text-[11px] font-bold text-[#71717A] uppercase">
+                Language
+              </label>
+              <select
+                value={gammaCardLang}
+                onChange={(e) => setGammaCardLang(e.target.value as PresentationLanguage)}
+                className="w-full bg-[#FAFAFA] border border-[#E4E4E7] rounded-xl px-2.5 py-1.5 text-xs font-bold text-[#18181B] outline-hidden"
+              >
+                <option value="en">English</option>
+                <option value="hi">हिंदी (Hindi)</option>
+                <option value="mr">मराठी (Marathi)</option>
+              </select>
+            </div>
+
+            {/* Style */}
+            <div className="space-y-1">
+              <label className="block text-[11px] font-bold text-[#71717A] uppercase">
+                Style
+              </label>
+              <select
+                value={gammaCardStyle}
+                onChange={(e) => setGammaCardStyle(e.target.value as PresentationStyle)}
+                className="w-full bg-[#FAFAFA] border border-[#E4E4E7] rounded-xl px-2.5 py-1.5 text-xs font-bold text-[#18181B] outline-hidden capitalize"
+              >
+                <option value="professional">Professional (Structured)</option>
+                <option value="modern">Modern (Bold &amp; Sleek)</option>
+                <option value="minimal">Minimal (Clean Typography)</option>
+                <option value="cinematic">Cinematic (High Visual Impact)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Action Row */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+            <span className="text-[11px] text-[#71717A]">
+              Prompt generates tailored emergency cards in {gammaCardLang.toUpperCase()}.
+            </span>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <button
+                type="submit"
+                id="btn-dashboard-generate-presentation"
+                disabled={gammaCardGenerating}
+                className="flex-1 sm:flex-none px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 disabled:opacity-50"
+              >
+                {gammaCardGenerating ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>Compiling Deck...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Generate Presentation</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </form>
+
+        {/* Dashboard Card Generated Result */}
+        {gammaCardResult && (
+          <div className="p-4 bg-indigo-50/70 border border-indigo-200 rounded-xl space-y-3 animate-in fade-in">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-indigo-200/80 pb-2.5">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider bg-indigo-600 text-white px-2 py-0.5 rounded">
+                  {gammaCardResult.mode === "api" ? "Gamma API Generated" : "Presentation Prompt Ready"}
+                </span>
+                <h4 className="font-bold text-xs sm:text-sm text-[#18181B] mt-1">
+                  {gammaCardResult.topic}
+                </h4>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  id="btn-dashboard-copy-prompt"
+                  onClick={() => handleDashboardCopy(gammaCardResult.prompt)}
+                  className="px-3 py-1.5 bg-white hover:bg-zinc-50 text-[#18181B] border border-zinc-300 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors shadow-2xs"
+                >
+                  {gammaCardCopied ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <span className="text-emerald-700">Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5 text-[#71717A]" />
+                      <span>Copy Prompt</span>
+                    </>
+                  )}
+                </button>
+
+                <a
+                  id="btn-dashboard-open-gamma"
+                  href={gammaCardResult.gammaUrl || gammaCardResult.gammaWebUrl || "https://gamma.app/new"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-colors"
+                >
+                  <span>Open Gamma</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+
+            {/* Quick Cards Preview */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+              {gammaCardResult.slides?.slice(0, 4).map((s) => (
+                <div key={s.slideNumber} className="p-2.5 bg-white rounded-lg border border-indigo-100 space-y-1">
+                  <span className="text-[10px] font-bold text-indigo-700 block">Card {s.slideNumber}</span>
+                  <p className="font-bold text-[11px] text-[#18181B] truncate">{s.title}</p>
+                  <p className="text-[10px] text-[#71717A] line-clamp-2">{s.takeaway}</p>
+                </div>
+              ))}
+            </div>
+
+            {onNavigateToGamma && (
+              <div className="text-right pt-1">
+                <button
+                  type="button"
+                  onClick={onNavigateToGamma}
+                  className="text-xs font-bold text-indigo-700 hover:underline inline-flex items-center gap-1"
+                >
+                  <span>View all {gammaCardResult.slideCount} cards &amp; full prompt in Gamma Studio</span>
+                  <ChevronRight className="w-3 h-3" />
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

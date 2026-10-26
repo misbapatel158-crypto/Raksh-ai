@@ -10,6 +10,7 @@ import emergencyRoutes from "./routes/emergencyRoutes";
 import alertRoutes from "./routes/alertRoutes";
 import emergencyVehicleRoutes from "./routes/emergencyVehicleRoutes";
 import emergencyCorridorRoutes from "./routes/emergencyCorridorRoutes";
+import gammaRoutes from "./routes/gammaRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 
 export function createApp(): Express {
@@ -54,6 +55,7 @@ export function createApp(): Express {
   app.use("/api/notifications", alertRoutes);
   app.use("/api/emergency-vehicles", emergencyVehicleRoutes);
   app.use("/api/emergency-corridors", emergencyCorridorRoutes);
+  app.use("/api/gamma", gammaRoutes);
 
   // Global Error Handler
   app.use(errorHandler);

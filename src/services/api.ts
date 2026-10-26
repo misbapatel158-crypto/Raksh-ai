@@ -25,6 +25,10 @@ import {
   RouteRecommendation,
   DispatchEvent,
   SimulationStepResponse,
+  GammaGenerateRequest,
+  GammaGenerateResponse,
+  GammaStatusResponse,
+  PresentationRecord,
 } from "../types";
 
 
@@ -919,7 +923,61 @@ class ApiService {
       body: JSON.stringify(data),
     });
   }
+
+  // ==========================================================================
+  // GAMMA AI PRESENTATION STUDIO ENDPOINTS
+  // ==========================================================================
+
+  /**
+   * GET /api/gamma/status
+   */
+  public async getGammaStatus(): Promise<ApiResponse<GammaStatusResponse>> {
+    return this.request<GammaStatusResponse>("/api/gamma/status", {
+      method: "GET",
+    });
+  }
+
+  /**
+   * POST /api/gamma/generate
+   */
+  public async generateGammaPresentation(
+    data: GammaGenerateRequest
+  ): Promise<ApiResponse<GammaGenerateResponse>> {
+    return this.request<GammaGenerateResponse>("/api/gamma/generate", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  /**
+   * GET /api/gamma/history
+   */
+  public async getGammaHistory(): Promise<
+    ApiResponse<{ presentations: PresentationRecord[]; total: number }>
+  > {
+    return this.request<{ presentations: PresentationRecord[]; total: number }>(
+      "/api/gamma/history",
+      {
+        method: "GET",
+      }
+    );
+  }
+
+  /**
+   * DELETE /api/gamma/history/:id
+   */
+  public async deleteGammaHistory(
+    id: string
+  ): Promise<ApiResponse<{ success: boolean; message?: string }>> {
+    return this.request<{ success: boolean; message?: string }>(
+      `/api/gamma/history/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+  }
 }
 
 export const api = new ApiService();
+
 

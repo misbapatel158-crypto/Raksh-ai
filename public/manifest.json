@@ -1,0 +1,23 @@
+{
+  "name": "RakshAI Emergency Response System",
+  "short_name": "RakshAI",
+  "description": "AI-Powered Emergency Response System - When Every Second Matters.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#18181B",
+  "theme_color": "#DC2626",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "RakshAI - AI-Powered Emergency Response System",
+  "description": "When Every Second Matters. Intelligent emergency response platform with community incident reporting, AI-assisted triage, evidence hub, live radar, GPS routing, and offline support.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

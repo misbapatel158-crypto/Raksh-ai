@@ -1,0 +1,376 @@
+// Prisma schema for ResQAI Emergency Response System
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String             @id @default(cuid())
+  name         String
+  email        String             @unique
+  passwordHash String
+  phoneNumber  String?
+  countryCode  String?            @default("+1")
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  contacts     EmergencyContact[]
+  incidents    Incident[]
+  workflows    EmergencyWorkflow[]
+
+  @@map("users")
+}
+
+model EmergencyContact {
+  id           String   @id @default(cuid())
+  userId       String
+  name         String
+  relationship String
+  phone        String
+  isPrimary    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("emergency_contacts")
+}
+
+model Incident {
+  id                   String   @id @default(cuid())
+  userId               String
+  incidentType         String
+  description          String
+  peopleAffected       Int      @default(1)
+  vehiclesInvolved     Int      @default(0)
+  anyoneTrapped        Boolean  @default(false)
+  smokeOrFire          Boolean  @default(false)
+  latitude             Float
+  longitude            Float
+  locationAccuracy     Float?
+  aiSummary            String?
+  aiPriority           String   @default("MEDIUM")
+  recommendedResources String?  // JSON stringified array of recommended resource types
+  status               String   @default("REPORT_CREATED")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("incidents")
+}
+
+model EmergencyResource {
+  id           String   @id @default(cuid())
+  name         String
+  type         String   // AMBULANCE, HOSPITAL, POLICE, FIRE_SERVICE
+  phone        String
+  latitude     Float
+  longitude    Float
+  address      String
+  availability String   @default("AVAILABLE") // AVAILABLE, BUSY, ON_CALL
+  isDemo       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("emergency_resources")
+}
+
+model EmergencyWorkflow {
+  id                   String   @id @default(cuid())
+  userId               String
+  status               String   @default("INITIALIZED")
+  incidentType         String?
+  description          String?
+  peopleAffected       Int?
+  anyoneTrapped        Boolean?
+  smokeOrFire          Boolean?
+  latitude             Float?
+  longitude            Float?
+  locationAccuracy     Float?
+  aiSummary            String?
+  aiPriority           String?
+  recommendedResources String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("emergency_workflows")
+}
+
+model Hospital {
+  id                  String   @id @default(cuid())
+  name                String
+  category            String   // GOVERNMENT, PRIVATE
+  address             String
+  latitude            Float
+  longitude           Float
+  phone               String?
+  ambulancePhone      String?
+  emergencyDepartment String?
+  source              String   @default("Verified Medical Directory")
+  lastVerified        String   @default("2026-08-01")
+  isActive            Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("hospitals")
+}
+
+model FireService {
+  id               String   @id @default(cuid())
+  name             String
+  address          String
+  latitude         Float
+  longitude        Float
+  phone            String?
+  emergencyContact String?
+  source           String   @default("Verified Fire & Rescue Directory")
+  lastVerified     String   @default("2026-08-01")
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("fire_services")
+}
+
+model EmergencyIncident {
+  id                   String   @id @default(cuid())
+  incidentCode         String?  // e.g. RK-1024
+  userId               String?
+  reporterUserId       String?
+  type                 String   @default("ROAD_ACCIDENT") // ROAD_ACCIDENT, FIRE, MEDICAL, ROAD_BLOCK, OTHER
+  latitude             Float
+  longitude            Float
+  accuracy             Float?
+  address              String?
+  detectedAt           DateTime @default(now())
+  description          String?
+  status               String   @default("REPORTED") // POSSIBLE, REPORTED, UNDER_REVIEW, HELP_REQUESTED, RESPONSE_INITIATED, RESPONSE_REPORTED, HELP_ARRIVING, RESOLVED, CANCELLED
+  ambulanceNeeded      Boolean  @default(true)
+  policeNeeded         Boolean  @default(true)
+  fireServiceNeeded    Boolean  @default(false)
+  source               String   @default("USER_REPORT") // SENSOR_POSSIBLE_CRASH, MANUAL_SOS, USER_REPORT, DEMO_SIMULATION
+  confidence           String   @default("POSSIBLE") // POSSIBLE, UNCONFIRMED, CONFIRMED, COMMUNITY_VERIFIED
+  severity             String   @default("CRITICAL") // LOW, HIGH, CRITICAL
+  aiClassification     String?  // e.g. "Road Accident"
+  aiConfidenceScore    Int?     // e.g. 87 (percent)
+  reportCount          Int      @default(1)
+  photoCount           Int      @default(0)
+  timelineEvents       String?  // JSON string array of timeline events
+  isPublicAlert        Boolean  @default(true)
+  expiresAt            DateTime?
+  nearestHospitalId    String?
+  nearestFireServiceId String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  verifications        IncidentVerification[]
+  evidence             IncidentEvidence[]
+
+  @@map("emergency_incidents")
+}
+
+model IncidentEvidence {
+  id               String            @id @default(cuid())
+  incidentId       String
+  imageUrl         String
+  caption          String?
+  uploaderId       String?
+  approxLatitude   Float?
+  approxLongitude  Float?
+  aiSuggestedType  String?
+  aiConfidence     Int?              @default(85)
+  isPrivacyBlurred Boolean           @default(true)
+  createdAt        DateTime          @default(now())
+  incident         EmergencyIncident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+
+  @@map("incident_evidences")
+}
+
+model IncidentVerification {
+  id               String            @id @default(cuid())
+  incidentId       String
+  userId           String?
+  verificationType String            // I_CAN_SEE_ACCIDENT, CANNOT_CONFIRM, APPEARS_RESOLVED
+  notes            String?
+  createdAt        DateTime          @default(now())
+  incident         EmergencyIncident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+
+  @@map("incident_verifications")
+}
+
+model UserAlertSetting {
+  id                       String   @id @default(cuid())
+  userId                   String?  @unique
+  accidentDetectionEnabled Boolean  @default(true)
+  nearbyAlertsEnabled      Boolean  @default(true)
+  alertRadiusKm            Int      @default(5)
+  accidentAlerts           Boolean  @default(true)
+  fireAlerts               Boolean  @default(true)
+  medicalAlerts            Boolean  @default(true)
+  policeAlerts             Boolean  @default(true)
+  pushToken                String?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  @@map("user_alert_settings")
+}
+
+model UserLocation {
+  id        String   @id @default(cuid())
+  userId    String?
+  latitude  Float
+  longitude Float
+  accuracy  Float?
+  timestamp DateTime @default(now())
+
+  @@map("user_locations")
+}
+
+model EmergencyVehicle {
+  id                   String                   @id @default(cuid())
+  vehicleType          String                   // AMBULANCE, FIRE_BRIGADE, POLICE
+  unitCode             String                   // e.g. AMB-102, FIRE-014, POL-021
+  status               String                   @default("AVAILABLE") // AVAILABLE, DISPATCHED, EN_ROUTE, ARRIVED, COMPLETED, ON_BREAK
+  latitude             Float
+  longitude            Float
+  previousLatitude     Float?
+  previousLongitude    Float?
+  startLatitude        Float?
+  startLongitude       Float?
+  startLocationName    String?                  // e.g. "Shivaji Nagar Depot"
+  currentLocationName  String?                  // e.g. "Shivaji Nagar", "Deccan", "Camp"
+  speed                Float                    @default(0.0) // km/h
+  heading              Float                    @default(0.0) // degrees
+  destinationLatitude  Float?
+  destinationLongitude Float?
+  destinationName      String?
+  distanceTravelled    Float?                   @default(0.0) // in km
+  distanceRemaining    Float?                   // in km
+  etaSeconds           Int?                     // seconds remaining
+  expectedArrivalTime  DateTime?
+  actualArrivalTime    DateTime?
+  assignedIncidentId   String?
+  routeId              String?
+  lastUpdated          DateTime                 @default(now())
+  isLive               Boolean                  @default(true)
+  isDemo               Boolean                  @default(true)
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
+  corridors            EmergencyCorridor[]
+  locationHistories    VehicleLocationHistory[]
+  dispatchEvents       DispatchEvent[]
+
+  @@map("emergency_vehicles")
+}
+
+model EmergencyCorridor {
+  id                  String                @id @default(cuid())
+  corridorCode        String?               // e.g. COR-PUNE-01
+  name                String                // e.g. FC Road to Sassoon General Hospital Green Corridor
+  incidentId          String?
+  vehicleId           String?
+  status              String                @default("ACTIVE") // ACTIVE, PENDING, COMPLETED, CANCELLED
+  priority            String                @default("CRITICAL") // CRITICAL, HIGH, MEDIUM, LOW
+  originName          String?
+  originLat           Float?
+  originLng           Float?
+  destinationName     String?
+  destinationLat      Float?
+  destinationLng      Float?
+  totalDistanceKm     Float?
+  estimatedEtaMinutes Int?
+  activeJunctionCount Int                   @default(0)
+  trafficCondition    String                @default("MODERATE") // CLEAR, MODERATE, HEAVY, SEVERE
+  waypointsJson       String?               // JSON array of [lat, lng] coordinates
+  isDemo              Boolean               @default(true)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  vehicle             EmergencyVehicle?     @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  junctions           CorridorJunction[]
+  recommendations     RouteRecommendation[]
+
+  @@map("emergency_corridors")
+}
+
+model CorridorJunction {
+  id                      String             @id @default(cuid())
+  corridorId              String?
+  name                    String             // e.g. "Junction 1 - Shimla Office Chowk"
+  sequence                Int                @default(1)
+  latitude                Float
+  longitude               Float
+  trafficStatus           String             @default("CLEAR") // CLEAR, MODERATE, HEAVY, SEVERE
+  corridorStatus          String             @default("ACTIVE") // ACTIVE, REDIRECTED, STANDBY, CLOSED
+  greenWaveActive         Boolean            @default(true)
+  clearanceDistanceMeters Int                @default(300)
+  isDemo                  Boolean            @default(true)
+  lastUpdated             DateTime           @default(now())
+  corridor                EmergencyCorridor? @relation(fields: [corridorId], references: [id], onDelete: Cascade)
+
+  @@map("corridor_junctions")
+}
+
+model VehicleLocationHistory {
+  id                String            @id @default(cuid())
+  vehicleId         String
+  latitude          Float
+  longitude         Float
+  speed             Float?
+  heading           Float?
+  locationName      String?
+  distanceTravelled Float?
+  timestamp         DateTime          @default(now())
+  vehicle           EmergencyVehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@map("vehicle_location_histories")
+}
+
+model DispatchEvent {
+  id          String            @id @default(cuid())
+  incidentId  String?
+  vehicleId   String?
+  eventType   String            // INCIDENT_REPORTED, VEHICLE_ASSIGNED, DISPATCHED, EN_ROUTE, DISTANCE_UPDATE, ARRIVED, COMPLETED, CANCELLED
+  timestamp   DateTime          @default(now())
+  latitude    Float?
+  longitude   Float?
+  description String
+  vehicle     EmergencyVehicle? @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@map("dispatch_events")
+}
+
+model TrafficStatus {
+  id           String   @id @default(cuid())
+  segmentName  String
+  trafficLevel String   @default("MODERATE") // CLEAR, MODERATE, HEAVY, SEVERE
+  averageSpeed Float?   // km/h
+  isDemo       Boolean  @default(true)
+  updatedAt    DateTime @default(now())
+
+  @@map("traffic_statuses")
+}
+
+model RouteRecommendation {
+  id                     String             @id @default(cuid())
+  corridorId             String?
+  vehicleId              String?
+  incidentId             String?
+  recommendedRouteName   String             // "Route A - Smart Corridor"
+  recommendedEtaMinutes  Int                @default(4)
+  recommendedDistanceKm  Float              @default(1.8)
+  alternativeRouteName   String             // "Route B - Arterial Bypass"
+  alternativeEtaMinutes  Int                @default(7)
+  alternativeDistanceKm  Float              @default(2.6)
+  reason                 String             // "Route A has lower estimated congestion."
+  aiPriority             String             @default("CRITICAL")
+  confidence             Int                @default(94)
+  createdAt              DateTime           @default(now())
+  corridor               EmergencyCorridor? @relation(fields: [corridorId], references: [id], onDelete: Cascade)
+
+  @@map("route_recommendations")
+}
+
+
